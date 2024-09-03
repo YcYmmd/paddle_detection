@@ -100,7 +100,7 @@ class Detector(object):
                  enable_mkldnn=False,
                  enable_mkldnn_bfloat16=False,
                  output_dir='output',
-                 threshold=0.5,
+                 threshold=0.7,
                  delete_shuffle_pass=False,
                  use_fd_format=False):
         self.pred_config = self.set_config(model_dir, use_fd_format=use_fd_format)
@@ -240,7 +240,7 @@ class Detector(object):
                             slice_size=[640, 640],
                             overlap_ratio=[0.25, 0.25],
                             combine_method='nms',
-                            match_threshold=0.6,
+                            match_threshold=0.5,
                             match_metric='ios',
                             run_benchmark=False,
                             repeats=1,

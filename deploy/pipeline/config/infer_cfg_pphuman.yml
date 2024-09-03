@@ -5,15 +5,17 @@ visual: True
 warmup_frame: 50
 
 DET:
-  model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/mot_ppyoloe_l_36e_pipeline.zip
+  #model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/mot_ppyoloe_s_36e_pipeline.zip
+  model_dir: D:\paddle_detection_weights\ppyoloe_plus_crn_l_30e_voc
   batch_size: 1
 
 MOT:
-  model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/mot_ppyoloe_l_36e_pipeline.zip
-  tracker_config: deploy/pipeline/config/tracker_config.yml
+#  model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/mot_ppyoloe_s_36e_pipeline.zip
+  model_dir: D:\paddle_detection_weights\ppyoloe_plus_crn_l_30e_voc
+  tracker_config: D:\python_workspace\PaddleDetection\PaddleDetection\deploy\pipeline\config\tracker_config.yml
   batch_size: 1
-  skip_frame_num: -1 # preferably no more than 3
-  enable: False
+  skip_frame_num: 1 # preferably no more than 3
+  enable: True
 
 KPT:
   model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/dark_hrnet_w32_256x192.zip
@@ -28,7 +30,7 @@ VIDEO_ACTION:
   model_dir: https://videotag.bj.bcebos.com/PaddleVideo-release2.3/ppTSM_fight.zip
   batch_size: 1
   frame_len: 8
-  sample_freq: 7
+  sample_freq: 10
   short_size: 340
   target_size: 320
   enable: False

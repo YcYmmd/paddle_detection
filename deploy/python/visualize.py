@@ -418,6 +418,24 @@ def visualize_action(im,
 
     return im
 
+def visualize_sudden_event(im, sudden_text=""):
+    im = cv2.imread(im) if isinstance(im, str) else im
+    im_h, im_w = im.shape[:2]
+
+    text_scale = max(1, im.shape[1] / 400.)
+    text_thickness = 2
+
+
+    cv2.putText(
+        im,
+        sudden_text,
+        (10, int(15 * text_scale) + 60),
+        cv2.FONT_ITALIC,
+        text_scale, (0, 0, 255),
+        thickness=text_thickness)
+
+    return im
+
 
 def visualize_vehicleplate(im, results, boxes=None):
     if isinstance(im, str):

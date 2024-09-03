@@ -20,6 +20,7 @@ import yaml
 import copy
 import numpy as np
 import subprocess as sp
+from collections import defaultdict
 
 from python.keypoint_preprocess import EvalAffine, TopDownEvalAffine, expand_crop
 
@@ -227,11 +228,22 @@ def crop_image_with_mot(input, mot_res, expand=True):
 
 def parse_mot_res(input):
     mot_res = []
+    # print(input[0])
     boxes, scores, ids = input[0]
-    for box, score, i in zip(boxes[0], scores[0], ids[0]):
-        xmin, ymin, w, h = box
-        res = [i, 0, score, xmin, ymin, xmin + w, ymin + h]
-        mot_res.append(res)
+    # print("boxes: ", boxes)
+    # print("scores: ", scores)
+    # print("ids: ", ids)
+    # print("box_type: ", type(boxes))
+    # print("score_type: ", type(scores))
+    # print("ids_type: ", type(ids))
+    # print("box_keys: ", boxes.keys())
+    # print("score_keys: ", scores.keys())
+    # print("ids_keys: ", ids.keys())
+    for key in boxes.keys():
+        for box, score, i in zip(boxes[key], scores[key], ids[key]):
+            xmin, ymin, w, h = box
+            res = [i, key, score, xmin, ymin, xmin + w, ymin + h]
+            mot_res.append(res)
     return {'boxes': np.array(mot_res)}
 
 
