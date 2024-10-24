@@ -407,7 +407,7 @@ def visualize_action(im,
                 cv2.putText(im, display_text, text_position,
                             cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 255), 2)
 
-    if video_action_score:
+    if video_action_score and video_action_score > 0.8:
         cv2.putText(
             im,
             video_action_text + ': %.2f' % video_action_score,

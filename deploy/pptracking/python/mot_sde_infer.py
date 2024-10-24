@@ -93,7 +93,7 @@ class SDE_Detector(Detector):
                  cpu_threads=1,
                  enable_mkldnn=False,
                  output_dir='output',
-                 threshold=0.7,
+                 threshold=0.5,
                  save_images=False,
                  save_mot_txts=False,
                  draw_center_traj=False,

@@ -315,7 +315,7 @@ class DetActionRecognizer(object):
                  cpu_threads=1,
                  enable_mkldnn=False,
                  output_dir='output',
-                 threshold=0.5,
+                 threshold=0.6,
                  display_frames=20,
                  skip_frame_num=0):
         super(DetActionRecognizer, self).__init__()

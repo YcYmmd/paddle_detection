@@ -34,8 +34,8 @@ def write_file_list(file_list, ratio, image_directory, annotation_directory, out
             f.write(line)
 
 # 使用示例
-image_directory = '/devdata/ycy/datasets/merge_paddle_data_smoke_person_fire/JPEGImages/'  # 替换为你的图像目录路径
-annotation_directory = '/devdata/ycy/datasets/merge_paddle_data_smoke_person_fire/Annotations/'  # 替换为你的标注目录路径
-output_directory = '/devdata/ycy/datasets/merge_paddle_data_smoke_person_fire/'  # 替换为你希望生成文件的目录路径
+image_directory = '/devdata/ycy/datasets/merge_paddle_data_smoge_fire/JPEGImages/'  # 替换为你的图像目录路径
+annotation_directory = '/devdata/ycy/datasets/merge_paddle_data_smoge_fire/Annotations/'  # 替换为你的标注目录路径
+output_directory = '/devdata/ycy/datasets/merge_paddle_data_smoge_fire/'  # 替换为你希望生成文件的目录路径
 split_voc_xml_annotations(image_directory, annotation_directory, output_directory)
 

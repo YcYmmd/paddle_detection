@@ -1,21 +1,21 @@
 metric: VOC
 map_type: 11point
-num_classes: 4
+num_classes: 2
 
 TrainDataset:
   name: VOCDataSet
-  dataset_dir: /devdata/ycy/datasets/merge_paddle_data_smoke_person_fire
+  dataset_dir: /devdata/ycy/datasets/merge_paddle_data_smoge_fire
   anno_path: train_list.txt
   label_list: labels.txt
   data_fields: ['image', 'gt_bbox', 'gt_class', 'difficult']
 
 EvalDataset:
   name: VOCDataSet
-  dataset_dir: /devdata/ycy/datasets/merge_paddle_data_smoke_person_fire
+  dataset_dir: /devdata/ycy/datasets/merge_paddle_data_smoge_fire
   anno_path: test_list.txt
   label_list: labels.txt
   data_fields: ['image', 'gt_bbox', 'gt_class', 'difficult']
 
 TestDataset:
   name: ImageFolder
-  anno_path: /devdata/ycy/datasets/merge_paddle_data_smoke_person_fire/labels.txt
+  anno_path: /devdata/ycy/datasets/merge_paddle_data_smoge_fire/labels.txt

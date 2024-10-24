@@ -33,6 +33,6 @@ def remove_extra_image_files(image_directory, annotation_directory):
         print(f'Removed: {image_path}')
 
 # 使用示例
-image_directory = '/devdata/ycy/datasets/merge_paddle_data_smoke_person_fire/JPEGImages'  # 替换为你的图像目录路径
-annotation_directory = '/devdata/ycy/datasets/merge_paddle_data_smoke_person_fire/Annotations'  # 替换为你的标注目录路径
-remove_extra_xml_files(image_directory, annotation_directory)
+image_directory = '/devdata/ycy/datasets/merge_person/JPEGImages'  # 替换为你的图像目录路径
+annotation_directory = '/devdata/ycy/datasets/merge_person/Annotations'  # 替换为你的标注目录路径
+remove_extra_image_files(image_directory, annotation_directory)

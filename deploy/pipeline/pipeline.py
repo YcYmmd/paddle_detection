@@ -413,6 +413,16 @@ class PipePredictor(object):
                 args.trt_min_shape, args.trt_max_shape, args.trt_opt_shape,
                 args.trt_calib_mode, args.cpu_threads, args.enable_mkldnn)
         else:
+
+            det_cfg = self.cfg['DET']
+            model_dir = det_cfg['model_dir']
+            batch_size = det_cfg['batch_size']
+
+            self.det_predictor = Detector(
+                model_dir, args.device, args.run_mode, batch_size,
+                args.trt_min_shape, args.trt_max_shape, args.trt_opt_shape,
+                args.trt_calib_mode, args.cpu_threads, args.enable_mkldnn)
+
             if self.with_idbased_detaction:
                 idbased_detaction_cfg = self.cfg['ID_BASED_DETACTION']
                 basemode = self.basemode['ID_BASED_DETACTION']
@@ -798,7 +808,7 @@ class PipePredictor(object):
                 if frame_id % 100 == 0:
                     print('Thread: {}; frame id: {}'.format(thread_idx, frame_id))
                 try:
-                    frame_rgb = framequeue.get(block=True, timeout=10)
+                    frame_rgb = framequeue.get(block=True, timeout=1)
                     waite_time = 0
                 except queue.Empty:
                     waite_time += 1
@@ -812,6 +822,7 @@ class PipePredictor(object):
                 if self.modebase["idbased"] or self.modebase["skeletonbased"]:
                     if frame_id > self.warmup_frame:
                         self.pipe_timer.module_time['mot'].start()
+                        self.pipe_timer.module_time['det'].start()
 
                     mot_skip_frame_num = self.mot_predictor.skip_frame_num
                     reuse_det_result = False
@@ -822,6 +833,12 @@ class PipePredictor(object):
                         visual=False,
                         reuse_det_result=reuse_det_result,
                         frame_count=frame_id)
+
+                    det_res = self.det_predictor.predict_image([copy.deepcopy(frame_rgb)], visual=False)
+                    det_res = self.det_predictor.filter_box(det_res, self.cfg['crop_thresh'])
+
+                    self.pipeline_res.update(det_res, 'det')
+
 
                     # mot output format: id, class, score, xmin, ymin, xmax, ymax
                     mot_res = parse_mot_res(res)
@@ -865,6 +882,8 @@ class PipePredictor(object):
                                 plate = self.collector.get_carlp(key)
                                 illegal_parking_dict[key]['plate'] = plate
 
+                    self.pipeline_res.update(mot_res, 'mot')
+
                     # nothing detected
                     if len(mot_res['boxes']) == 0:
                         frame_id += 1
@@ -874,7 +893,7 @@ class PipePredictor(object):
                         if self.cfg['visual']:
                             _, _, _ = self.pipe_timer.get_total_time()
                             im = self.visualize_video(
-                                frame_rgb, mot_res, self.collector, frame_id, fps,
+                                frame_rgb, self.pipeline_res, self.collector, frame_id, fps,
                                 entrance, records, center_traj)  # visualize
                             if len(self.pushurl) > 0:
                                 pushstream.pipe.stdin.write(im.tobytes())
@@ -886,7 +905,7 @@ class PipePredictor(object):
                                     break
                         continue
 
-                    self.pipeline_res.update(mot_res, 'mot')
+
                     crop_input, new_bboxes, ori_bboxes = crop_image_with_mot(
                         frame_rgb, mot_res)
 
@@ -1194,11 +1213,13 @@ class PipePredictor(object):
                         illegal_parking_dict=None):
         image = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
         mot_res = copy.deepcopy(result.get('mot'))
+        det_res = copy.deepcopy(result.get('det'))
 
         online_tlwhs = defaultdict(list)
         online_scores = defaultdict(list)
         online_ids = defaultdict(list)
-        if mot_res is not None:
+        if mot_res is not None and len(mot_res['boxes']) != 0:
+            print(mot_res)
             classes = mot_res["boxes"][:, 1]
             # for i in range(0, len(classes)):
             for i in classes:
@@ -1219,13 +1240,26 @@ class PipePredictor(object):
             online_scores[0] = scores
             online_ids[0] = ids
 
+        start_idx, boxes_num_i = 0, 0
+        if det_res is not None:
+            # print(det_res)
+            for i in range(0, len(det_res['boxes_num'])):
+                # print("i: ", i)
+                det_res_i = {}
+                boxes_num_i = det_res['boxes_num'][i]
+                # print(len(det_res['boxes']))
+                det_res_i['boxes'] = det_res['boxes'][start_idx:start_idx + boxes_num_i, :]
+                im = visualize_box_mask(image, det_res_i, labels=['fire', 'smog'], threshold=self.cfg['crop_thresh'])
+                image = np.ascontiguousarray(np.copy(im))
+
+
         # single class, still need to be defaultdict type for ploting
-        num_classes = 4
+        num_classes = 1
 
         # for key in mot_res['boxes'].keys():
 
 
-        if mot_res is not None:
+        if mot_res is not None and len(mot_res['boxes']) != 0:
             image = plot_tracking_dict(
                 image,
                 num_classes,
@@ -1271,7 +1305,7 @@ class PipePredictor(object):
                     image, press_vehicle, threshold=self.cfg['crop_thresh'])
                 image = np.array(image)
 
-        if mot_res is not None:
+        if mot_res is not None and len(mot_res['boxes']) != 0:
             vehicleplate = False
             plates = []
             for trackid in mot_res['boxes'][:, 0]:
@@ -1340,8 +1374,8 @@ class PipePredictor(object):
                                      visual_helper_for_display,
                                      action_to_display)
         # 如果有突发事件，比如火灾，要进行的操作
-        if mot_res and np.isin(0, mot_res["boxes"][:, 1]):
-            image = visualize_sudden_event(image, "着火！！！")
+        # if mot_res and np.isin(0, mot_res["boxes"][:, 1]):
+        #     image = visualize_sudden_event(image, "着火！！！")
 
         # if mot_res and np.isin(3, mot_res["boxes"][:, 1]):
         #     image = visualize_sudden_event(image, "烟雾！！！")

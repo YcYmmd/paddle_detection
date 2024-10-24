@@ -100,7 +100,7 @@ class Detector(object):
                  enable_mkldnn=False,
                  enable_mkldnn_bfloat16=False,
                  output_dir='output',
-                 threshold=0.7,
+                 threshold=0.5,
                  delete_shuffle_pass=False,
                  use_fd_format=False):
         self.pred_config = self.set_config(model_dir, use_fd_format=use_fd_format)

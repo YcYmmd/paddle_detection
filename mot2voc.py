@@ -24,6 +24,22 @@ test_16 = ['/devdata/ycy/datasets/MOT16/images/test/MOT16-01/',
            '/devdata/ycy/datasets/MOT16/images/test/MOT16-14/']
 
 
+train_17 = ['/devdata/ycy/datasets/MOT17/train/MOT17-02/',
+               '/devdata/ycy/datasets/MOT17/train/MOT17-04/',
+               '/devdata/ycy/datasets/MOT17/train/MOT17-05/',
+               '/devdata/ycy/datasets/MOT17/train/MOT17-09/',
+               '/devdata/ycy/datasets/MOT17/train/MOT17-10/',
+               '/devdata/ycy/datasets/MOT17/train/MOT17-11/',
+               '/devdata/ycy/datasets/MOT17/train/MOT17-13/']
+
+test_17 = [ '/devdata/ycy/datasets/MOT17/test/MOT17-01/',
+               '/devdata/ycy/datasets/MOT17/test/MOT17-03/',
+               '/devdata/ycy/datasets/MOT17/test/MOT17-06/',
+               '/devdata/ycy/datasets/MOT17/test/MOT17-07/',
+               '/devdata/ycy/datasets/MOT17/test/MOT17-08/',
+               '/devdata/ycy/datasets/MOT17/test/MOT17-12/',
+               '/devdata/ycy/datasets/MOT17/test/MOT17-14/']
+
 # train_20 = ['MOT20Det/train/MOT20-01/',
 #                 'MOT20Det/train/MOT20-02/',
 #                 'MOT20Det/train/MOT20-03/',
@@ -41,7 +57,7 @@ def parse_args():
         '--year',
         # choices=['17', '20'],
         # choices=['16'],
-        default='16',
+        default='17',
         help='year of MOT dataset')
     args = parser.parse_args()
     return args
@@ -156,9 +172,9 @@ def main():
     if args.year == '16':
         train_dirs = train_16
         test_dirs = test_16
-    # if args.year == '17':
-    #     train_dirs = train_17
-    #     test_dirs = test_17
+    if args.year == '17':
+        train_dirs = train_17
+        test_dirs = test_17
     # if args.year == '20':
     #     train_dirs = train_20
     #     test_dirs = test_20
