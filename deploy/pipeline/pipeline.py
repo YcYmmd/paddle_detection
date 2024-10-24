@@ -27,6 +27,10 @@ import time
 import datetime
 from collections import defaultdict
 from datacollector import DataCollector, Result
+
+import json
+import requests
+
 try:
     from collections.abc import Sequence
 except Exception:
@@ -65,6 +69,30 @@ from ppvehicle.vehicle_retrograde import VehicleRetrogradeRecognizer
 from ppvehicle.lane_seg_infer import LaneSegPredictor
 
 from download import auto_download_model
+
+# 测试用的函数，后续会根据实际情况进行修改
+def send_post_request():
+    data = {
+        "name": "抽烟",
+        "age": 25,
+        "email": "alice@example.com",
+    }
+    # 将数据转化为JSON格式
+    json_data = json.dumps(data)
+
+    # 发送POST请求
+    url = "http://localhost:8080/"
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.post(url, data=json_data, headers=headers)
+        # 输出响应
+        print(f"Response status code: {response.status_code}")
+        print(f"Response body: {response.text}")
+    except Exception as e:
+        print(f"Error sending POST request: {e}")
 
 
 class Pipeline(object):
@@ -526,6 +554,8 @@ class PipePredictor(object):
                 self.modebase[basemode] = True
                 self.video_action_predictor = VideoActionRecognizer.init_with_cfg(
                     args, video_action_cfg)
+
+        self.lasttime = None
 
     def set_file_name(self, path):
         if type(path) == int:
@@ -1363,6 +1393,14 @@ class PipePredictor(object):
         if det_action_res is not None:
             visual_helper_for_display.append(self.det_action_visual_helper)
             action_to_display.append("抽烟")
+            # 功能可用，但需要前端监听端口，所以这块代码先进行注释，后续有需要再开启
+            # if self.lasttime is None:
+            #     threading.Thread(target=send_post_request).start()
+            #     self.lasttime = time.time()
+            # elif time.time() - self.lasttime > 10:
+            #     threading.Thread(target=send_post_request).start()
+            #     self.lasttime = time.time()
+
 
         cls_action_res = result.get('cls_action')
         if cls_action_res is not None:
