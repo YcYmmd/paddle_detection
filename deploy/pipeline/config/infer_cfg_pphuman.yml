@@ -5,14 +5,14 @@ visual: True
 warmup_frame: 50
 
 DET:
-#  model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/mot_ppyoloe_s_36e_pipeline.zip
-  model_dir: D:\paddle_detection_weights\ppyoloe_plus_crn_s_30e_voc_only_fire_smog
+  model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/mot_ppyoloe_s_36e_pipeline.zip
+#  model_dir: D:\paddle_detection_weights\ppyoloe_plus_crn_s_30e_voc_only_fire_smog
   batch_size: 1
 
 MOT:
   model_dir: https://bj.bcebos.com/v1/paddledet/models/pipeline/mot_ppyoloe_s_36e_pipeline.zip
 #  model_dir: D:\paddle_detection_weights\ppyoloe_plus_crn_s_30e_voc_only_person
-  tracker_config: D:\python_workspace\PaddleDetection\PaddleDetection\deploy\pipeline\config\tracker_config.yml
+  tracker_config: deploy/pipeline/config/tracker_config.yml
   batch_size: 1
   skip_frame_num: 1 # preferably no more than 3
   enable: True
